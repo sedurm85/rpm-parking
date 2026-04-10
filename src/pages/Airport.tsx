@@ -7,10 +7,13 @@ const styles: Record<string, CSSProperties> = {
   container: {
     minHeight: '100vh',
     backgroundColor: '#f7f8fa',
-    paddingBottom: 80,
+    paddingBottom: 'calc(80px + var(--sab))',
   },
   header: {
-    padding: '20px 20px 16px',
+    paddingTop: 'calc(20px + var(--sat))',
+    paddingRight: 20,
+    paddingBottom: 16,
+    paddingLeft: 20,
     backgroundColor: '#0064FF',
     color: '#fff',
   },

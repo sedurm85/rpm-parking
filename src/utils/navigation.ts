@@ -4,6 +4,7 @@ interface NavTarget {
   lat: number;
   lng: number;
   name: string;
+  address: string;
 }
 
 const NAV_LABELS: Record<NavApp, string> = {
@@ -15,38 +16,38 @@ const NAV_LABELS: Record<NavApp, string> = {
 };
 
 function buildAppUrl(app: NavApp, target: NavTarget): string | null {
-  const { lat, lng, name } = target;
-  const encodedName = encodeURIComponent(name);
+  const { address } = target;
+  const query = encodeURIComponent(address);
 
   switch (app) {
     case 'apple':
-      return null; // iOS에서 https://maps.apple.com이 자동으로 Apple Maps 앱을 실행
+      return null;
     case 'naver':
-      return `nmap://navigation?dlat=${lat}&dlng=${lng}&dname=${encodedName}&appname=rpm-parking`;
+      return `nmap://search?query=${query}&appname=rpm-parking`;
     case 'kakao':
-      return `kakaomap://route?ep=${lat},${lng}&by=CAR`;
+      return `kakaomap://search?q=${query}`;
     case 'tmap':
-      return `tmap://route?goalx=${lng}&goaly=${lat}&goalname=${encodedName}`;
+      return `tmap://search?keyword=${query}`;
     case 'google':
       return null;
   }
 }
 
 function buildWebUrl(app: NavApp, target: NavTarget): string | null {
-  const { lat, lng, name } = target;
-  const encodedName = encodeURIComponent(name);
+  const { address } = target;
+  const query = encodeURIComponent(address);
 
   switch (app) {
     case 'apple':
-      return `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+      return `https://maps.apple.com/?q=${query}`;
     case 'naver':
-      return `https://map.naver.com/p/directions/-/${lng},${lat},${encodedName}/-/car`;
+      return `https://map.naver.com/p/search/${query}`;
     case 'kakao':
-      return `https://map.kakao.com/link/to/${encodedName},${lat},${lng}`;
+      return `https://map.kakao.com/?q=${query}`;
     case 'google':
-      return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      return `https://www.google.com/maps/search/?api=1&query=${query}`;
     case 'tmap':
-      return null; // 모바일 앱 전용, 웹 폴백 없음
+      return null;
   }
 }
 
@@ -54,7 +55,7 @@ function openNavApp(app: NavApp, target: NavTarget): void {
   const appUrl = buildAppUrl(app, target);
   const webUrl = buildWebUrl(app, target);
 
-  // 웹 URL만 있는 경우 (구글맵)
+  // 웹 URL만 있는 경우 (Apple, 구글맵)
   if (!appUrl && webUrl) {
     window.open(webUrl, '_blank');
     return;

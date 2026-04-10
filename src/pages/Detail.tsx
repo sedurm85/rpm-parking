@@ -18,7 +18,10 @@ const styles: Record<string, CSSProperties> = {
   header: {
     display: 'flex',
     alignItems: 'center',
-    padding: '12px 16px',
+    paddingTop: 'calc(12px + var(--sat))',
+    paddingRight: 16,
+    paddingBottom: 12,
+    paddingLeft: 16,
     backgroundColor: '#fff',
     borderBottom: '1px solid #f0f0f0',
   },
@@ -178,6 +181,7 @@ export function Detail() {
               lat={lot.lat}
               lng={lot.lng}
               name={lot.name}
+              address={lot.address}
             />
           ))}
         </div>

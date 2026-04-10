@@ -103,3 +103,92 @@ const iosIconSvg = `
 
 renderPng(iosIconSvg, resolve(iosIconDir, 'AppIcon-512@2x.png'));
 console.log('\\niOS App Icon generated at:', resolve(iosIconDir, 'AppIcon-512@2x.png'));
+
+// ===== Android Icons =====
+const androidResDir = resolve(__dirname, '..', 'android', 'app', 'src', 'main', 'res');
+
+// Android adaptive icon foreground (108dp with 72dp safe zone, centered)
+// 108dp canvas, icon content in center 72dp area
+const androidForegroundSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 432 432">
+  <text x="216" y="240" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, Helvetica, sans-serif" font-size="230" font-weight="900"
+        fill="#FFFFFF" letter-spacing="-7">P</text>
+  <g transform="translate(216, 340)" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7">
+    <path d="M-50,0 L-42,-16 L-16,-16 L-8,-28 L28,-28 L42,-16 L50,-16 L50,0 Z" fill="#FFFFFF" fill-opacity="0.25"/>
+    <circle cx="-24" cy="4" r="8" fill="#FFFFFF" fill-opacity="0.5"/>
+    <circle cx="28" cy="4" r="8" fill="#FFFFFF" fill-opacity="0.5"/>
+  </g>
+</svg>`;
+
+// Android full icon (with background baked in, for legacy devices)
+const androidFullSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 432 432">
+  <defs>
+    <linearGradient id="abg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0074FF"/>
+      <stop offset="100%" style="stop-color:#0054DD"/>
+    </linearGradient>
+  </defs>
+  <rect width="432" height="432" fill="url(#abg)"/>
+  <text x="216" y="240" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, Helvetica, sans-serif" font-size="230" font-weight="900"
+        fill="#FFFFFF" letter-spacing="-7">P</text>
+  <g transform="translate(216, 340)" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7">
+    <path d="M-50,0 L-42,-16 L-16,-16 L-8,-28 L28,-28 L42,-16 L50,-16 L50,0 Z" fill="#FFFFFF" fill-opacity="0.25"/>
+    <circle cx="-24" cy="4" r="8" fill="#FFFFFF" fill-opacity="0.5"/>
+    <circle cx="28" cy="4" r="8" fill="#FFFFFF" fill-opacity="0.5"/>
+  </g>
+</svg>`;
+
+// Round icon (same as full but clipped to circle)
+const androidRoundSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 432 432">
+  <defs>
+    <linearGradient id="rbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0074FF"/>
+      <stop offset="100%" style="stop-color:#0054DD"/>
+    </linearGradient>
+    <clipPath id="circle"><circle cx="216" cy="216" r="216"/></clipPath>
+  </defs>
+  <g clip-path="url(#circle)">
+    <rect width="432" height="432" fill="url(#rbg)"/>
+    <text x="216" y="240" text-anchor="middle" dominant-baseline="central"
+          font-family="Arial, Helvetica, sans-serif" font-size="230" font-weight="900"
+          fill="#FFFFFF" letter-spacing="-7">P</text>
+    <g transform="translate(216, 340)" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7">
+      <path d="M-50,0 L-42,-16 L-16,-16 L-8,-28 L28,-28 L42,-16 L50,-16 L50,0 Z" fill="#FFFFFF" fill-opacity="0.25"/>
+      <circle cx="-24" cy="4" r="8" fill="#FFFFFF" fill-opacity="0.5"/>
+      <circle cx="28" cy="4" r="8" fill="#FFFFFF" fill-opacity="0.5"/>
+    </g>
+  </g>
+</svg>`;
+
+function renderAndroidIcon(svg, size, outputPath) {
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: 'width', value: size },
+    font: { loadSystemFonts: true },
+  });
+  const pngBuffer = resvg.render().asPng();
+  writeFileSync(outputPath, pngBuffer);
+  console.log(`Generated: ${outputPath} (${size}x${size}, ${pngBuffer.length} bytes)`);
+}
+
+// Android mipmap sizes: mdpi=48, hdpi=72, xhdpi=96, xxhdpi=144, xxxhdpi=192
+// Foreground sizes (adaptive): mdpi=108, hdpi=162, xhdpi=216, xxhdpi=324, xxxhdpi=432
+const densities = [
+  { name: 'mdpi', icon: 48, fg: 108 },
+  { name: 'hdpi', icon: 72, fg: 162 },
+  { name: 'xhdpi', icon: 96, fg: 216 },
+  { name: 'xxhdpi', icon: 144, fg: 324 },
+  { name: 'xxxhdpi', icon: 192, fg: 432 },
+];
+
+console.log('\\n--- Android Icons ---');
+for (const d of densities) {
+  const dir = resolve(androidResDir, `mipmap-${d.name}`);
+  renderAndroidIcon(androidFullSvg, d.icon, resolve(dir, 'ic_launcher.png'));
+  renderAndroidIcon(androidRoundSvg, d.icon, resolve(dir, 'ic_launcher_round.png'));
+  renderAndroidIcon(androidForegroundSvg, d.fg, resolve(dir, 'ic_launcher_foreground.png'));
+}
+console.log('\\nAndroid icons generated!');

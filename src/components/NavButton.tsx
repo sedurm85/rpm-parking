@@ -7,6 +7,7 @@ interface NavButtonProps {
   lat: number;
   lng: number;
   name: string;
+  address: string;
 }
 
 const colorMap: Record<NavApp, string> = {
@@ -38,7 +39,7 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
-export function NavButton({ app, lat, lng, name }: NavButtonProps) {
+export function NavButton({ app, lat, lng, name, address }: NavButtonProps) {
   return (
     <button
       style={{
@@ -46,7 +47,7 @@ export function NavButton({ app, lat, lng, name }: NavButtonProps) {
         backgroundColor: colorMap[app],
         color: textColorMap[app],
       }}
-      onClick={() => openNavApp(app, { lat, lng, name })}
+      onClick={() => openNavApp(app, { lat, lng, name, address })}
     >
       {NAV_LABELS[app]}
     </button>

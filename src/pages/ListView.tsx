@@ -20,7 +20,10 @@ const styles: Record<string, CSSProperties> = {
     flexDirection: 'column',
   },
   header: {
-    padding: '16px 16px 0',
+    paddingTop: 'calc(16px + var(--sat))',
+    paddingRight: 16,
+    paddingBottom: 0,
+    paddingLeft: 16,
     backgroundColor: '#fff',
   },
   title: {
@@ -51,7 +54,7 @@ const styles: Record<string, CSSProperties> = {
   list: {
     flex: 1,
     paddingTop: 12,
-    paddingBottom: 80,
+    paddingBottom: 'calc(80px + var(--sab))',
   },
   empty: {
     textAlign: 'center',
