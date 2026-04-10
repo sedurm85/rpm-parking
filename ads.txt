@@ -1,0 +1,2 @@
+# Google AdSense - 게시자 ID 발급 후 아래 주석 해제하고 수정
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
